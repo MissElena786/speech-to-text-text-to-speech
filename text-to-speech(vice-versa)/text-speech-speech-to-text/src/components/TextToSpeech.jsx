@@ -546,6 +546,16 @@ export default function TextToSpeech() {
 
     ];
 
+
+    const enhanceTextForSpeech = (text) => {
+        // Add slight pauses and more natural flow
+        return text
+            .replace(/\.\s*/g, ". ... ")      // Add pause after periods
+            .replace(/,\s*/g, ", ... ")       // Pause after commas
+            .replace(/!\s*/g, "! ")           // Excited tone
+            .replace(/\?\s*/g, "? ... ")      // Curious/pause
+            .replace(/\s{2,}/g, " ");         // Clean extra spaces
+    };
     const handleSpeak = async () => {
         if (!text.trim()) {
             toast.error("Please enter text to speak!");
@@ -554,9 +564,11 @@ export default function TextToSpeech() {
         // Stop any ongoing speech
         handleStop();
 
-        const url = `https://api.voicerss.org/?key=${apiKey}&hl=${selectedVoice.lang}&v=${selectedVoice.voice}&src=${encodeURIComponent(
-            text
-        )}&c=MP3`;
+        // const url = `https://api.voicerss.org/?key=${apiKey}&hl=${selectedVoice.lang}&v=${selectedVoice.voice}&src=${encodeURIComponent(
+        //     text
+        // )}&c=MP3`;
+        const url = `https://api.voicerss.org/?key=${apiKey}&hl=${selectedVoice.lang}&v=${selectedVoice.voice}&src=${encodeURIComponent(enhanceTextForSpeech(text))}
+        &c=MP3`;
 
         const audio = new Audio(url);
         audioRef.current = audio;
@@ -694,7 +706,7 @@ export default function TextToSpeech() {
                                 <div className="relative group cursor-pointer">
                                     <button
                                         onClick={handlePause}
-                                        title="Pause"
+                                        // title="Pause"
                                         className="cursor-pointer"
                                     >
                                         <StopCircleIcon className="text-gray-600 hover:scale-110 transition-transform" fontSize="large" />
@@ -709,7 +721,7 @@ export default function TextToSpeech() {
                                 <div className="relative group cursor-pointer">
                                     <button
                                         onClick={handleResume}
-                                        title="Resume"
+                                        // title="Resume"
                                         className="cursor-pointer"
                                     >
                                         <PlayCircleOutlineIcon className="text-slate-600 hover:scale-110 transition-transform" fontSize="large" />
